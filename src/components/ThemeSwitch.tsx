@@ -2,21 +2,22 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-const ThemeSwitch = () => {
-  const { theme, setTheme } = useTheme();
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+const ThemeSwitch = () => {
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  // Avoid hydration mismatch
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
 
   return (
-    <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-      {theme === "dark" ? (
-        <div className="w-5 h-5 bg-white rounded-full">light</div>
-      ) : (
-        <div className="w-5 h-5 bg-black rounded-full">dark</div>
-      )}
+    <button
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="fixed top-4 right-4 w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+      aria-label="Toggle theme"
+    >
+      {theme === "dark" ? "🌙" : "☀️"}
     </button>
   );
 };
