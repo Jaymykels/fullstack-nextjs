@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false);
@@ -12,13 +13,15 @@ const ThemeSwitch = () => {
   if (!mounted) return null;
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="fixed top-4 right-4 w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+      className="fixed top-4 right-4"
       aria-label="Toggle theme"
     >
-      {theme === "dark" ? "🌙" : "☀️"}
-    </button>
+      {theme === "dark" ? "☀️" : "🌙"}
+    </Button>
   );
 };
 
