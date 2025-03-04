@@ -4,7 +4,7 @@ import { Todo, Tag } from "../types";
 import { TodosService } from "@/services/todos.service";
 
 @Service()
-@Resolver(Todo)
+@Resolver(() => Todo)
 export class TodoResolver {
   constructor(
     private readonly todosService: TodosService
@@ -15,7 +15,7 @@ export class TodoResolver {
     return await this.todosService.findAll();
   }
 
-  @FieldResolver()
+  @FieldResolver(() => [Tag])
   async tags(@Root() todo: Todo): Promise<Tag[]> {
     return this.todosService.getTodoTags(todo);
   }

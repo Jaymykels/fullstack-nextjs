@@ -26,15 +26,9 @@ export class Todo {
   @Field()
   completed: boolean;
 
-  @Field(() => [Tag])
-  tags: Tag[];
-
   @Field(() => Date)
   createdAt: Date;
 
   @Field(() => Date)
   updatedAt: Date;
-
-  // Internal field (not exposed in GraphQL)
-  tagIds: string[];
 } 

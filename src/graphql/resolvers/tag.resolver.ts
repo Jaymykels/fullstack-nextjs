@@ -5,7 +5,7 @@ import { TagsService } from "@/services/tags.service";
 import { TodosService } from "@/services/todos.service";
 
 @Service()
-@Resolver(Tag)
+@Resolver(() => Tag)
 export class TagResolver {
   constructor(
     private readonly tagsService: TagsService,

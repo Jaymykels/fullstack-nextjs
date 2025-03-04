@@ -13,14 +13,14 @@ export class TodosService {
 
   async findAll(): Promise<Todo[]> {
     const dbTodos = await db.select().from(todos);
-    return Promise.all(dbTodos.map(todo => this.mapDBTodoToTodo(todo)));
+    return dbTodos;
   }
 
   async findById(id: string): Promise<Todo | undefined> {
     const [dbTodo] = await db.select().from(todos).where(eq(todos.id, id));
     if (!dbTodo) return undefined;
 
-    return this.mapDBTodoToTodo(dbTodo);
+    return dbTodo;
   }
 
   private async getTodoTagIds(todoId: string): Promise<string[]> {
@@ -51,7 +51,7 @@ export class TodosService {
       return [createdTodo];
     });
 
-    return this.mapDBTodoToTodo(dbTodo, tagIds);
+    return dbTodo;
   }
 
   async toggle(id: string): Promise<Todo> {
@@ -63,32 +63,20 @@ export class TodosService {
     
     if (!dbTodo) throw new Error("Todo not found");
     
-    return this.mapDBTodoToTodo(dbTodo);
+    return dbTodo;
   }
 
   async remove(id: string): Promise<Todo> {
     const [dbTodo] = await db.delete(todos).where(eq(todos.id, id)).returning();
     if (!dbTodo) throw new Error("Todo not found");
     
-    return this.mapDBTodoToTodo(dbTodo);
+    return dbTodo;
   }
 
   async getTodoTags(todo: Todo): Promise<Tag[]> {
     const tagIds = await this.getTodoTagIds(todo.id);
     const tags = await this.tagsService.findByIds(tagIds);
     return tags.filter((tag): tag is Tag => tag !== null);
-  }
-
-  private async mapDBTodoToTodo(dbTodo: Omit<Todo, "tags" | "tagIds">, tagIds?: string[]): Promise<Todo> {
-    return {
-      id: dbTodo.id,
-      title: dbTodo.title,
-      completed: dbTodo.completed,
-      createdAt: dbTodo.createdAt,
-      updatedAt: dbTodo.updatedAt,
-      tagIds: tagIds || await this.getTodoTagIds(dbTodo.id),
-      tags: [], // Tags are resolved by the GraphQL field resolver
-    };
   }
 
   async addTag(todoId: string, tagId: string): Promise<Todo> {
@@ -99,7 +87,7 @@ export class TodosService {
     if (!tag) throw new Error("Tag not found");
 
     await db.insert(todoTags).values({ todoId, tagId });
-    return { ...todo, tagIds: [...todo.tagIds, tagId] };
+    return todo;
   }
 
   async removeTag(todoId: string, tagId: string): Promise<Todo> {
@@ -110,7 +98,7 @@ export class TodosService {
       .delete(todoTags)
       .where(sql`${todoTags.todoId} = ${todoId} AND ${todoTags.tagId} = ${tagId}`);
 
-    return { ...todo, tagIds: todo.tagIds.filter(id => id !== tagId) };
+    return todo;
   }
 
   async removeTagFromAll(tagId: string): Promise<void> {
