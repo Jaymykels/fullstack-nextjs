@@ -16,7 +16,7 @@ export class TodoResolver {
   }
 
   @FieldResolver()
-  tags(@Root() todo: Todo): Tag[] {
+  async tags(@Root() todo: Todo): Promise<Tag[]> {
     return this.todosService.getTodoTags(todo);
   }
 
@@ -39,10 +39,10 @@ export class TodoResolver {
   }
 
   @Mutation(() => Todo)
-  addTagToTodo(
+  async addTagToTodo(
     @Arg("todoId", () => ID) todoId: string,
     @Arg("tagId", () => ID) tagId: string
-  ): Todo {
+  ): Promise<Todo> {
     return this.todosService.addTag(todoId, tagId);
   }
 

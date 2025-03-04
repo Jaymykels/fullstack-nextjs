@@ -50,11 +50,16 @@ export class TodosService {
     return todo;
   }
 
-  addTag(todoId: string, tagId: string): Todo {
+  async getTodoTags(todo: Todo): Promise<Tag[]> {
+    const tags = await this.tagsService.findByIds(todo.tagIds);
+    return tags.filter((tag): tag is Tag => tag !== null);
+  }
+
+  async addTag(todoId: string, tagId: string): Promise<Todo> {
     const todo = this.findById(todoId);
     if (!todo) throw new Error("Todo not found");
     
-    const tag = this.tagsService.findById(tagId);
+    const tag = await this.tagsService.findById(tagId);
     if (!tag) throw new Error("Tag not found");
 
     if (!todo.tagIds.includes(tagId)) {
@@ -76,11 +81,5 @@ export class TodosService {
     this.todos.forEach(todo => {
       todo.tagIds = todo.tagIds.filter(id => id !== tagId);
     });
-  }
-
-  getTodoTags(todo: Todo): Tag[] {
-    return todo.tagIds
-      .map(tagId => this.tagsService.findById(tagId))
-      .filter(Boolean) as Tag[];
   }
 } 
