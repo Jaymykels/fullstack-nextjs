@@ -1,8 +1,8 @@
 import { Service } from "typedi";
-import { Tag } from "@/graphql/types";
+import { Tag, NewTag } from "@/db/types";
 import { createDataloader } from "@/lib/createDataloader";
 import { db } from "@/db";
-import { tags } from "@/db/schema";
+import { tags } from "@/db/migrations/schema";
 import { eq, sql } from "drizzle-orm";
 
 @Service()
@@ -33,7 +33,7 @@ export class TagsService {
   }
 
   async create(name: string): Promise<Tag> {
-    const newTag = {
+    const newTag: NewTag = {
       id: Math.random().toString(36).substr(2, 9),
       name,
     };

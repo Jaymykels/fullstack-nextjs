@@ -8,11 +8,11 @@ export class Tag {
   @Field()
   name: string;
 
-  @Field()
-  createdAt: Date;
+  @Field(() => String)
+  createdAt: string;
 
-  @Field()
-  updatedAt: Date;
+  @Field(() => String)
+  updatedAt: string;
 }
 
 @ObjectType()
@@ -26,9 +26,9 @@ export class Todo {
   @Field()
   completed: boolean;
 
-  @Field(() => Date)
-  createdAt: Date;
+  @Field(() => String)
+  createdAt: string;
 
-  @Field(() => Date)
-  updatedAt: Date;
+  @Field(() => String)
+  updatedAt: string;
 } 

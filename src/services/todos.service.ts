@@ -2,7 +2,7 @@ import { Service, Inject } from "typedi";
 import { Todo, Tag } from "@/graphql/types";
 import { TagsService } from "./tags.service";
 import { db } from "@/db";
-import { todos, todoTags } from "@/db/schema";
+import { todos, todoTags } from "@/db/migrations/schema";
 import { eq, sql } from "drizzle-orm";
 
 @Service()

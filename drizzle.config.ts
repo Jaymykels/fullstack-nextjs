@@ -6,4 +6,6 @@ export default {
   out: './src/db/migrations',
   dialect: 'postgresql',
   dbCredentials: dbConfig,
+  verbose: true,
+  strict: true,
 } satisfies Config; 
