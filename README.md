@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Todo Application with GraphQL
+
+A modern Todo application built with Next.js, GraphQL, Drizzle ORM, and PostgreSQL. This project demonstrates a full-stack application with type-safe database operations, GraphQL API, and a React frontend.
+
+## Features
+
+- ✨ Full-stack TypeScript application
+- 🎯 GraphQL API with Type-GraphQL
+- 🗃️ PostgreSQL database with Drizzle ORM
+- 🔄 Real-time updates with Apollo Client
+- 🎨 Styled with Tailwind CSS and Radix UI
+- 🔒 Type-safe database operations
+- 🌱 Database seeding and migrations
+- 🐳 Docker-compose for development
 
 ## Getting Started
 
-First, run the development server:
-
+1. Clone the repository
+2. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Start the PostgreSQL database:
+```bash
+docker-compose up -d
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Set up the database:
+```bash
+# Generate migrations
+yarn db:generate
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Run migrations
+yarn db:migrate
+
+# (Optional) Reset database and apply seed data
+yarn db:reset
+```
+
+5. Start the development server:
+```bash
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the application.
+
+## Database Commands
+
+- `yarn db:generate` - Generate new migrations
+- `yarn db:push` - Push schema changes to database
+- `yarn db:pull` - Pull database changes to schema
+- `yarn db:migrate` - Run pending migrations
+- `yarn db:studio` - Open Drizzle Studio
+- `yarn db:reset` - Reset database and apply migrations
+- `yarn db:update-seed` - Update seed file with current database data
+
+## Project Structure
+
+```
+src/
+├── app/                 # Next.js app router
+├── components/         # React components
+├── db/                 # Database configuration and migrations
+│   ├── migrations/    # Database migrations
+│   └── schema.ts      # Database schema
+├── graphql/           # GraphQL types and operations
+│   ├── operations.ts  # GraphQL queries and mutations
+│   ├── resolvers/     # GraphQL resolvers
+│   └── types.ts       # GraphQL type definitions
+├── lib/               # Shared utilities
+└── services/          # Business logic layer
+```
+
+## Features
+
+### Todo Management
+- Create new todos
+- Toggle todo completion
+- Delete completed todos
+- Add tags to todos
+- Filter todos by tags
+
+### Database
+- Type-safe database operations with Drizzle ORM
+- Database migrations
+- Seed data management
+- Database reset functionality
+
+### API
+- GraphQL API with Type-GraphQL
+- DataLoader for efficient data fetching
+- Type-safe resolvers and operations
+
+### Frontend
+- Modern React with hooks
+- Apollo Client for state management
+- Form handling with React Hook Form
+- UI components with Radix UI
+- Styling with Tailwind CSS
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [GraphQL Yoga](https://the-guild.dev/graphql/yoga-server)
+- [Drizzle ORM](https://orm.drizzle.team)
+- [Apollo Client](https://www.apollographql.com/docs/react)
+- [Type-GraphQL](https://typegraphql.com)
+```
