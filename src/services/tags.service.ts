@@ -4,6 +4,7 @@ import { createDataloader } from "@/lib/createDataloader";
 import { db } from "@/db";
 import { tags } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
+import { mapDBTagToTag } from "@/db/types";
 
 @Service()
 export class TagsService {
@@ -16,19 +17,19 @@ export class TagsService {
 
   async findAll(): Promise<Tag[]> {
     const dbTags = await db.select().from(tags);
-    return dbTags.map(this.mapDBTagToTag);
+    return dbTags.map(mapDBTagToTag);
   }
 
   async findById(id: string): Promise<Tag | null> {
     const dbTag = await this.tagLoader.load(id);
-    return dbTag ? this.mapDBTagToTag(dbTag) : null;
+    return dbTag ? mapDBTagToTag(dbTag) : null;
   }
 
   async findByIds(ids: string[]): Promise<(Tag | null)[]> {
     const results = await this.tagLoader.loadMany(ids);
     return results.map(result => 
       result instanceof Error ? null : 
-      result ? this.mapDBTagToTag(result) : null
+      result ? mapDBTagToTag(result) : null
     );
   }
 
@@ -40,7 +41,7 @@ export class TagsService {
     
     const [dbTag] = await db.insert(tags).values(newTag).returning();
     this.tagLoader.clear(dbTag.id);
-    return this.mapDBTagToTag(dbTag);
+    return mapDBTagToTag(dbTag);
   }
 
   async remove(id: string): Promise<Tag> {
@@ -48,15 +49,6 @@ export class TagsService {
     if (!dbTag) throw new Error("Tag not found");
     
     this.tagLoader.clear(id);
-    return this.mapDBTagToTag(dbTag);
-  }
-
-  private mapDBTagToTag(dbTag: Tag): Tag {
-    return {
-      id: dbTag.id,
-      name: dbTag.name,
-      createdAt: dbTag.createdAt,
-      updatedAt: dbTag.updatedAt,
-    };
+    return mapDBTagToTag(dbTag);
   }
 } 
