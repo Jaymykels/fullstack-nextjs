@@ -10,9 +10,10 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
-    "migrate": "tsx src/db/migrate.ts",
-    "studio": "drizzle-kit studio",
-    "db:reset": "tsx src/db/reset.ts"
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:studio": "drizzle-kit studio",
+    "db:reset": "tsx src/db/reset.ts",
+    "db:update-seed": "tsx src/db/update-seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",
