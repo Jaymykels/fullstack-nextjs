@@ -1,85 +1,119 @@
 import { Service, Inject } from "typedi";
 import { Todo, Tag } from "@/graphql/types";
 import { TagsService } from "./tags.service";
+import { db } from "@/db";
+import { todos, todoTags } from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
 
 @Service()
 export class TodosService {
-  private todos: Todo[] = [
-    { id: "1", title: "Buy groceries", completed: false, tagIds: ["3"], tags: [] },
-    { id: "2", title: "Finish project", completed: false, tagIds: ["1"], tags: [] },
-    { id: "3", title: "Call the bank", completed: false, tagIds: ["1", "2"], tags: [] },
-  ];
-
   constructor(
     @Inject() private readonly tagsService: TagsService
   ) {}
 
-  findAll(): Todo[] {
-    return this.todos;
+  async findAll(): Promise<Todo[]> {
+    const dbTodos = await db.select().from(todos);
+    return Promise.all(dbTodos.map(todo => this.mapDBTodoToTodo(todo)));
   }
 
-  findById(id: string): Todo | undefined {
-    return this.todos.find(todo => todo.id === id);
+  async findById(id: string): Promise<Todo | undefined> {
+    const [dbTodo] = await db.select().from(todos).where(eq(todos.id, id));
+    if (!dbTodo) return undefined;
+
+    return this.mapDBTodoToTodo(dbTodo);
   }
 
-  create(title: string, tagIds: string[] = []): Todo {
+  private async getTodoTagIds(todoId: string): Promise<string[]> {
+    const relations = await db
+      .select({ tagId: todoTags.tagId })
+      .from(todoTags)
+      .where(eq(todoTags.todoId, todoId));
+    
+    return relations.map(r => r.tagId);
+  }
+
+  async create(title: string, tagIds: string[] = []): Promise<Todo> {
     const newTodo = {
       id: Math.random().toString(36).substr(2, 9),
       title,
       completed: false,
-      tagIds,
-      tags: [],
     };
-    this.todos.push(newTodo);
-    return newTodo;
+
+    const [dbTodo] = await db.transaction(async (tx) => {
+      const [createdTodo] = await tx.insert(todos).values(newTodo).returning();
+      
+      if (tagIds.length > 0) {
+        await tx.insert(todoTags).values(
+          tagIds.map(tagId => ({ todoId: createdTodo.id, tagId }))
+        );
+      }
+
+      return [createdTodo];
+    });
+
+    return this.mapDBTodoToTodo(dbTodo, tagIds);
   }
 
-  toggle(id: string): Todo {
-    const todo = this.findById(id);
-    if (!todo) throw new Error("Todo not found");
+  async toggle(id: string): Promise<Todo> {
+    const [dbTodo] = await db
+      .update(todos)
+      .set({ completed: sql`NOT ${todos.completed}` })
+      .where(eq(todos.id, id))
+      .returning();
     
-    todo.completed = !todo.completed;
-    return todo;
+    if (!dbTodo) throw new Error("Todo not found");
+    
+    return this.mapDBTodoToTodo(dbTodo);
   }
 
-  remove(id: string): Todo {
-    const todo = this.findById(id);
-    if (!todo) throw new Error("Todo not found");
+  async remove(id: string): Promise<Todo> {
+    const [dbTodo] = await db.delete(todos).where(eq(todos.id, id)).returning();
+    if (!dbTodo) throw new Error("Todo not found");
     
-    this.todos = this.todos.filter(t => t.id !== id);
-    return todo;
+    return this.mapDBTodoToTodo(dbTodo);
   }
 
   async getTodoTags(todo: Todo): Promise<Tag[]> {
-    const tags = await this.tagsService.findByIds(todo.tagIds);
+    const tagIds = await this.getTodoTagIds(todo.id);
+    const tags = await this.tagsService.findByIds(tagIds);
     return tags.filter((tag): tag is Tag => tag !== null);
   }
 
+  private async mapDBTodoToTodo(dbTodo: Omit<Todo, "tags" | "tagIds">, tagIds?: string[]): Promise<Todo> {
+    return {
+      id: dbTodo.id,
+      title: dbTodo.title,
+      completed: dbTodo.completed,
+      createdAt: dbTodo.createdAt,
+      updatedAt: dbTodo.updatedAt,
+      tagIds: tagIds || await this.getTodoTagIds(dbTodo.id),
+      tags: [], // Tags are resolved by the GraphQL field resolver
+    };
+  }
+
   async addTag(todoId: string, tagId: string): Promise<Todo> {
-    const todo = this.findById(todoId);
+    const todo = await this.findById(todoId);
     if (!todo) throw new Error("Todo not found");
     
     const tag = await this.tagsService.findById(tagId);
     if (!tag) throw new Error("Tag not found");
 
-    if (!todo.tagIds.includes(tagId)) {
-      todo.tagIds.push(tagId);
-    }
-
-    return todo;
+    await db.insert(todoTags).values({ todoId, tagId });
+    return { ...todo, tagIds: [...todo.tagIds, tagId] };
   }
 
-  removeTag(todoId: string, tagId: string): Todo {
-    const todo = this.findById(todoId);
+  async removeTag(todoId: string, tagId: string): Promise<Todo> {
+    const todo = await this.findById(todoId);
     if (!todo) throw new Error("Todo not found");
 
-    todo.tagIds = todo.tagIds.filter(id => id !== tagId);
-    return todo;
+    await db
+      .delete(todoTags)
+      .where(sql`${todoTags.todoId} = ${todoId} AND ${todoTags.tagId} = ${tagId}`);
+
+    return { ...todo, tagIds: todo.tagIds.filter(id => id !== tagId) };
   }
 
-  removeTagFromAll(tagId: string): void {
-    this.todos.forEach(todo => {
-      todo.tagIds = todo.tagIds.filter(id => id !== tagId);
-    });
+  async removeTagFromAll(tagId: string): Promise<void> {
+    await db.delete(todoTags).where(eq(todoTags.tagId, tagId));
   }
 } 

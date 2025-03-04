@@ -13,19 +13,19 @@ export class TagResolver {
   ) {}
 
   @Query(() => [Tag])
-  tags(): Tag[] {
-    return this.tagsService.findAll();
+  async tags(): Promise<Tag[]> {
+    return await this.tagsService.findAll();
   }
 
   @Mutation(() => Tag)
-  addTag(@Arg("name") name: string): Tag {
-    return this.tagsService.create(name);
+  async addTag(@Arg("name") name: string): Promise<Tag> {
+    return await this.tagsService.create(name);
   }
 
   @Mutation(() => Tag)
-  removeTag(@Arg("id", () => ID) id: string): Tag {
-    const tag = this.tagsService.remove(id);
-    this.todosService.removeTagFromAll(id);
+  async removeTag(@Arg("id", () => ID) id: string): Promise<Tag> {
+    const tag = await this.tagsService.remove(id);
+    await this.todosService.removeTagFromAll(id);
     return tag;
   }
 } 

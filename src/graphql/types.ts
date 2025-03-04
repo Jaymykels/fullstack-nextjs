@@ -7,6 +7,12 @@ export class Tag {
 
   @Field()
   name: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 }
 
 @ObjectType()
@@ -22,6 +28,12 @@ export class Todo {
 
   @Field(() => [Tag])
   tags: Tag[];
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
 
   // Internal field (not exposed in GraphQL)
   tagIds: string[];

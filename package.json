@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate": "drizzle-kit generate:pg",
+    "migrate": "tsx src/db/migrate.ts",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",
@@ -33,7 +36,9 @@
     "tailwindcss-animate": "^1.0.7",
     "type-graphql": "^2.0.0-beta.3",
     "typedi": "^0.10.0",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "drizzle-orm": "^0.29.3",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -45,7 +50,10 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "drizzle-kit": "^0.20.13",
+    "tsx": "^4.7.1",
+    "@types/pg": "^8.11.2"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

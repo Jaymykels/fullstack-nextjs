@@ -11,8 +11,8 @@ export class TodoResolver {
   ) {}
 
   @Query(() => [Todo])
-  todos(): Todo[] {
-    return this.todosService.findAll();
+  async todos(): Promise<Todo[]> {
+    return await this.todosService.findAll();
   }
 
   @FieldResolver()
@@ -21,21 +21,21 @@ export class TodoResolver {
   }
 
   @Mutation(() => Todo)
-  addTodo(
+  async addTodo(
     @Arg("title") title: string,
     @Arg("tagIds", () => [ID], { nullable: true }) tagIds: string[] = []
-  ): Todo {
-    return this.todosService.create(title, tagIds);
+  ): Promise<Todo> {
+    return await this.todosService.create(title, tagIds);
   }
 
   @Mutation(() => Todo)
-  toggleTodo(@Arg("id", () => ID) id: string): Todo {
-    return this.todosService.toggle(id);
+  async toggleTodo(@Arg("id", () => ID) id: string): Promise<Todo> {
+    return await this.todosService.toggle(id);
   }
 
   @Mutation(() => Todo)
-  deleteTodo(@Arg("id", () => ID) id: string): Todo {
-    return this.todosService.remove(id);
+  async deleteTodo(@Arg("id", () => ID) id: string): Promise<Todo> {
+    return await this.todosService.remove(id);
   }
 
   @Mutation(() => Todo)
@@ -43,14 +43,14 @@ export class TodoResolver {
     @Arg("todoId", () => ID) todoId: string,
     @Arg("tagId", () => ID) tagId: string
   ): Promise<Todo> {
-    return this.todosService.addTag(todoId, tagId);
+    return await this.todosService.addTag(todoId, tagId);
   }
 
   @Mutation(() => Todo)
-  removeTagFromTodo(
+  async removeTagFromTodo(
     @Arg("todoId", () => ID) todoId: string,
     @Arg("tagId", () => ID) tagId: string
-  ): Todo {
-    return this.todosService.removeTag(todoId, tagId);
+  ): Promise<Todo> {
+    return await this.todosService.removeTag(todoId, tagId);
   }
 } 
