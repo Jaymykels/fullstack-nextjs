@@ -8,6 +8,7 @@ const pool = new Pool({
   user: 'postgres',
   password: 'postgres',
   database: 'todos',
+  ssl: false,
 });
 
 export const db = drizzle(pool, { schema }); 
