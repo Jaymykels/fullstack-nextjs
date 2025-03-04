@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { createYoga } from 'graphql-yoga';
 import { buildSchema } from 'type-graphql';
+import { Container } from "@/container";
 import { TodoResolver } from '@/graphql/resolvers/todo.resolver';
 import { TagResolver } from '@/graphql/resolvers/tag.resolver';
 
@@ -10,6 +11,7 @@ async function getSchema() {
   if (!schema) {
     schema = await buildSchema({
       resolvers: [TodoResolver, TagResolver],
+      container: Container,
       validate: false,
     });
   }

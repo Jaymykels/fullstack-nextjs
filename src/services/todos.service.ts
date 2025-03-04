@@ -1,22 +1,28 @@
+import { Service, Inject } from "typedi";
 import { Todo, Tag } from "@/graphql/types";
 import { TagsService } from "./tags.service";
 
+@Service()
 export class TodosService {
-  private static todos: Todo[] = [
+  private todos: Todo[] = [
     { id: "1", title: "Buy groceries", completed: false, tagIds: ["3"], tags: [] },
     { id: "2", title: "Finish project", completed: false, tagIds: ["1"], tags: [] },
     { id: "3", title: "Call the bank", completed: false, tagIds: ["1", "2"], tags: [] },
   ];
 
-  static findAll(): Todo[] {
+  constructor(
+    @Inject() private readonly tagsService: TagsService
+  ) {}
+
+  findAll(): Todo[] {
     return this.todos;
   }
 
-  static findById(id: string): Todo | undefined {
+  findById(id: string): Todo | undefined {
     return this.todos.find(todo => todo.id === id);
   }
 
-  static create(title: string, tagIds: string[] = []): Todo {
+  create(title: string, tagIds: string[] = []): Todo {
     const newTodo = {
       id: Math.random().toString(36).substr(2, 9),
       title,
@@ -28,7 +34,7 @@ export class TodosService {
     return newTodo;
   }
 
-  static toggle(id: string): Todo {
+  toggle(id: string): Todo {
     const todo = this.findById(id);
     if (!todo) throw new Error("Todo not found");
     
@@ -36,7 +42,7 @@ export class TodosService {
     return todo;
   }
 
-  static remove(id: string): Todo {
+  remove(id: string): Todo {
     const todo = this.findById(id);
     if (!todo) throw new Error("Todo not found");
     
@@ -44,11 +50,11 @@ export class TodosService {
     return todo;
   }
 
-  static addTag(todoId: string, tagId: string): Todo {
+  addTag(todoId: string, tagId: string): Todo {
     const todo = this.findById(todoId);
     if (!todo) throw new Error("Todo not found");
     
-    const tag = TagsService.findById(tagId);
+    const tag = this.tagsService.findById(tagId);
     if (!tag) throw new Error("Tag not found");
 
     if (!todo.tagIds.includes(tagId)) {
@@ -58,7 +64,7 @@ export class TodosService {
     return todo;
   }
 
-  static removeTag(todoId: string, tagId: string): Todo {
+  removeTag(todoId: string, tagId: string): Todo {
     const todo = this.findById(todoId);
     if (!todo) throw new Error("Todo not found");
 
@@ -66,15 +72,15 @@ export class TodosService {
     return todo;
   }
 
-  static removeTagFromAll(tagId: string): void {
+  removeTagFromAll(tagId: string): void {
     this.todos.forEach(todo => {
       todo.tagIds = todo.tagIds.filter(id => id !== tagId);
     });
   }
 
-  static getTodoTags(todo: Todo): Tag[] {
+  getTodoTags(todo: Todo): Tag[] {
     return todo.tagIds
-      .map(tagId => TagsService.findById(tagId))
+      .map(tagId => this.tagsService.findById(tagId))
       .filter(Boolean) as Tag[];
   }
 } 
