@@ -3,7 +3,7 @@ import { dbConfig } from './src/db/config';
 
 export default {
   schema: './src/db/schema.ts',
-  out: './drizzle',
+  out: './src/db/migrations',
   dialect: 'postgresql',
   dbCredentials: dbConfig,
 } satisfies Config; 

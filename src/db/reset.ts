@@ -1,0 +1,48 @@
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { Pool } from 'pg';
+import { dbConfig } from './config';
+
+const pool = new Pool(dbConfig);
+const db = drizzle(pool);
+
+async function main() {
+  console.log('Resetting database...');
+  
+  // Drop all schemas
+  await pool.query(`
+    DO $$ 
+    DECLARE 
+      schema_name text;
+    BEGIN
+      -- Get all non-system schemas
+      FOR schema_name IN (
+        SELECT nspname 
+        FROM pg_namespace 
+        WHERE nspname NOT LIKE 'pg_%' 
+          AND nspname != 'information_schema'
+      )
+      LOOP
+        EXECUTE 'DROP SCHEMA ' || quote_ident(schema_name) || ' CASCADE';
+      END LOOP;
+      
+      -- Recreate public schema
+      CREATE SCHEMA public;
+      GRANT ALL ON SCHEMA public TO postgres;
+      GRANT ALL ON SCHEMA public TO public;
+    END $$;
+  `);
+
+  console.log('All schemas dropped. Running migrations...');
+  
+  // Run migrations
+  await migrate(db, { migrationsFolder: 'src/db/migrations' });
+  
+  console.log('Database reset complete!');
+  await pool.end();
+}
+
+main().catch((err) => {
+  console.error('Database reset failed:', err);
+  process.exit(1);
+}); 
