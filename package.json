@@ -16,6 +16,8 @@
     "db:update-seed": "tsx src/db/update-seed.ts"
   },
   "dependencies": {
+    "@apollo/client": "^3.9.5",
+    "@apollo/experimental-nextjs-app-support": "^0.8.0",
     "@hookform/resolvers": "^4.1.2",
     "@radix-ui/react-checkbox": "^1.1.4",
     "@radix-ui/react-dialog": "^1.1.6",

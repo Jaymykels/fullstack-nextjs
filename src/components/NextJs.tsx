@@ -25,6 +25,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_TODOS, ADD_TODO, TOGGLE_TODO, DELETE_TODO } from "@/graphql/operations";
 
 interface Todo {
   id: string;
@@ -39,11 +41,10 @@ const formSchema = z.object({
 })
 
 const NextJs = () => {
-  const [todos, setTodos] = useState<Todo[]>([
-    { id: "1", title: "Buy groceries", completed: false },
-    { id: "2", title: "Finish project", completed: false },
-    { id: "3", title: "Call the bank", completed: false },
-  ]);
+  const { data, loading, error, refetch } = useQuery(GET_TODOS);
+  const [addTodo] = useMutation(ADD_TODO);
+  const [toggleTodo] = useMutation(TOGGLE_TODO);
+  const [deleteTodo] = useMutation(DELETE_TODO);
 
   const [open, setOpen] = useState(false);
 
@@ -54,28 +55,48 @@ const NextJs = () => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const newTodo = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: values.title,
-      completed: false,
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await addTodo({
+        variables: { title: values.title },
+        refetchQueries: [{ query: GET_TODOS }],
+      });
+      form.reset();
+      setOpen(false);
+    } catch (error) {
+      console.error("Failed to add todo:", error);
     }
-    setTodos([...todos, newTodo])
-    form.reset()
-    setOpen(false)
   }
 
-  const toggleTodo = (id: string) => {
-    setTodos(todos.map(todo => 
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ))
-  }
+  const handleToggleTodo = async (id: string) => {
+    try {
+      await toggleTodo({
+        variables: { id },
+        refetchQueries: [{ query: GET_TODOS }],
+      });
+    } catch (error) {
+      console.error("Failed to toggle todo:", error);
+    }
+  };
 
-  const deleteSelected = () => {
-    setTodos(todos.filter(todo => !todo.completed))
-  }
+  const handleDeleteSelected = async () => {
+    try {
+      const selectedTodos = data?.todos.filter((todo: any) => todo.completed) || [];
+      await Promise.all(
+        selectedTodos.map((todo: any) =>
+          deleteTodo({
+            variables: { id: todo.id },
+          })
+        )
+      );
+      await refetch();
+    } catch (error) {
+      console.error("Failed to delete todos:", error);
+    }
+  };
 
-  const hasSelectedTodos = todos.some(todo => todo.completed);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return ( 
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -90,12 +111,12 @@ const NextJs = () => {
         />
 
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          {todos.map((todo) => (
+          {data?.todos.map((todo: any) => (
             <li key={todo.id} className="mb-2 flex items-center gap-2">
               <Checkbox 
                 id={todo.id}
                 checked={todo.completed}
-                onCheckedChange={() => toggleTodo(todo.id)}
+                onCheckedChange={() => handleToggleTodo(todo.id)}
               />
               <label
                 htmlFor={todo.id}
@@ -110,8 +131,8 @@ const NextJs = () => {
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <Button
             className="rounded-full"
-            onClick={deleteSelected}
-            disabled={!hasSelectedTodos}
+            onClick={handleDeleteSelected}
+            disabled={!data?.todos.some((todo: any) => todo.completed)}
             variant="destructive"
           >
             <Image
