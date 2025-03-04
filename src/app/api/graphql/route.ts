@@ -1,17 +1,24 @@
-import { createYoga } from 'graphql-yoga'
-import { typeDefs } from "@/graphql/schema";
-import { resolvers } from "@/graphql/resolvers";
-import { createSchema } from 'graphql-yoga'
+import "reflect-metadata";
+import { createYoga } from 'graphql-yoga';
+import { buildSchema } from 'type-graphql';
+import { TodoResolver } from '@/graphql/resolvers/todo.resolver';
 
-const schema = createSchema({
-  typeDefs,
-  resolvers,
-})
+let schema: any;
+
+async function getSchema() {
+  if (!schema) {
+    schema = await buildSchema({
+      resolvers: [TodoResolver],
+      validate: false,
+    });
+  }
+  return schema;
+}
 
 const { handleRequest } = createYoga({
-  schema,
+  schema: getSchema(),
   graphqlEndpoint: '/api/graphql',
   fetchAPI: { Response }
-})
+});
 
 export { handleRequest as GET, handleRequest as POST } 
