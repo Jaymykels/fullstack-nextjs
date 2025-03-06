@@ -26,7 +26,8 @@ import {
 } from "@/components/ui/form"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_TODOS, ADD_TODO, TOGGLE_TODO, DELETE_TODO } from "@/graphql/operations";
+import { GET_TODOS, ADD_TODO, TOGGLE_TODO, DELETE_TODO, GET_TAGS } from "@/graphql/operations";
+import { MultiSelect } from "@/components/ui/multi-select"
 
 interface Todo {
   id: string;
@@ -38,6 +39,7 @@ const formSchema = z.object({
   title: z.string().min(3, {
     message: "Todo must be at least 3 characters.",
   }),
+  tagIds: z.array(z.string()).default([]),
 })
 
 const NextJs = () => {
@@ -45,6 +47,7 @@ const NextJs = () => {
   const [addTodo] = useMutation(ADD_TODO);
   const [toggleTodo] = useMutation(TOGGLE_TODO);
   const [deleteTodo] = useMutation(DELETE_TODO);
+  const { data: tagsData } = useQuery(GET_TAGS);
 
   const [open, setOpen] = useState(false);
 
@@ -52,13 +55,19 @@ const NextJs = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      tagIds: [],
     },
   })
+
+  console.log(form.watch("tagIds"));
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await addTodo({
-        variables: { title: values.title },
+        variables: { 
+          title: values.title,
+          tagIds: values.tagIds,
+        },
         refetchQueries: [{ query: GET_TODOS }],
       });
       form.reset();
@@ -170,6 +179,27 @@ const NextJs = () => {
                         <FormLabel>Task</FormLabel>
                         <FormControl>
                           <Input placeholder="Enter your task" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tagIds"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tags</FormLabel>
+                        <FormControl>
+                          <MultiSelect
+                            options={tagsData?.tags.map((tag: any) => ({
+                              value: tag.id,
+                              label: tag.name,
+                            })) || []}
+                            selected={field.value}
+                            onChange={field.onChange}
+                            placeholder="Select tags..."
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

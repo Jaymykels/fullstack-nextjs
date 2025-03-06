@@ -44,3 +44,12 @@ export const DELETE_TODO = gql`
     }
   }
 `; 
+
+export const GET_TAGS = gql`
+  query GetTags {
+    tags {
+      id
+      name
+    }
+  }
+`;
