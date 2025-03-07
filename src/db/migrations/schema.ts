@@ -1,10 +1,10 @@
-import { pgTable, text, boolean, timestamp, foreignKey } from "drizzle-orm/pg-core"
+import { pgTable, uuid, text, boolean, timestamp, foreignKey } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
 
 export const todos = pgTable("todos", {
-	id: text().primaryKey().notNull(),
+	id: uuid().default(sql`uuid_generate_v4()`).primaryKey().notNull(),
 	title: text().notNull(),
 	completed: boolean().default(false).notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
@@ -12,8 +12,8 @@ export const todos = pgTable("todos", {
 });
 
 export const todoTags = pgTable("todo_tags", {
-	todoId: text("todo_id").notNull(),
-	tagId: text("tag_id").notNull(),
+	todoId: uuid("todo_id").notNull(),
+	tagId: uuid("tag_id").notNull(),
 }, (table) => [
 	foreignKey({
 			columns: [table.todoId],
@@ -28,7 +28,7 @@ export const todoTags = pgTable("todo_tags", {
 ]);
 
 export const tags = pgTable("tags", {
-	id: text().primaryKey().notNull(),
+	id: uuid().default(sql`uuid_generate_v4()`).primaryKey().notNull(),
 	name: text().notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),

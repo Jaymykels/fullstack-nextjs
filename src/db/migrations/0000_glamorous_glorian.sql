@@ -1,17 +1,20 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE IF NOT EXISTS "tags" (
-	"id" text PRIMARY KEY NOT NULL,
-	"name" text NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+	"name" text NOT NULL UNIQUE,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "todo_tags" (
-	"todo_id" text NOT NULL,
-	"tag_id" text NOT NULL
+	"todo_id" uuid NOT NULL,
+	"tag_id" uuid NOT NULL,
+	UNIQUE("todo_id", "tag_id")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "todos" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	"title" text NOT NULL,
 	"completed" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,

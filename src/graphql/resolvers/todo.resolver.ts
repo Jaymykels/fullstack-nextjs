@@ -1,6 +1,6 @@
 import { Arg, FieldResolver, ID, Mutation, Query, Resolver, Root } from "type-graphql";
 import { Service } from "typedi";
-import { Todo, Tag } from "../types";
+import { Todo, Tag, NewTodoInput } from "../types";
 import { TodosService } from "@/services/todos.service";
 
 @Service()
@@ -22,10 +22,9 @@ export class TodoResolver {
 
   @Mutation(() => Todo)
   async addTodo(
-    @Arg("title") title: string,
-    @Arg("tagIds", () => [ID], { nullable: true }) tagIds: string[] = []
+    @Arg("newTodo") newTodo: NewTodoInput
   ): Promise<Todo> {
-    return await this.todosService.create(title, tagIds);
+    return await this.todosService.create(newTodo);
   }
 
   @Mutation(() => Todo)
@@ -36,21 +35,5 @@ export class TodoResolver {
   @Mutation(() => Todo)
   async deleteTodo(@Arg("id", () => ID) id: string): Promise<Todo> {
     return await this.todosService.remove(id);
-  }
-
-  @Mutation(() => Todo)
-  async addTagToTodo(
-    @Arg("todoId", () => ID) todoId: string,
-    @Arg("tagId", () => ID) tagId: string
-  ): Promise<Todo> {
-    return await this.todosService.addTag(todoId, tagId);
-  }
-
-  @Mutation(() => Todo)
-  async removeTagFromTodo(
-    @Arg("todoId", () => ID) todoId: string,
-    @Arg("tagId", () => ID) tagId: string
-  ): Promise<Todo> {
-    return await this.todosService.removeTag(todoId, tagId);
   }
 } 

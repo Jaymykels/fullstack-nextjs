@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, InputType, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class Tag {
@@ -32,3 +32,27 @@ export class Todo {
   @Field(() => String)
   updatedAt: string;
 } 
+
+@InputType()
+export class NewTagInput {
+  @Field()
+  name: string;
+}
+
+@InputType()
+export class TagOrId {
+  @Field(() => ID, { nullable: true })
+  id?: string;
+
+  @Field(() => NewTagInput, { nullable: true })
+  newTag?: NewTagInput;
+}
+
+@InputType()
+export class NewTodoInput {
+  @Field()
+  title: string;
+
+  @Field(() => [TagOrId])
+  tags: TagOrId[];
+}

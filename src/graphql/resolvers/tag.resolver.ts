@@ -14,18 +14,6 @@ export class TagResolver {
 
   @Query(() => [Tag])
   async tags(): Promise<Tag[]> {
-    return await this.tagsService.findAll();
-  }
-
-  @Mutation(() => Tag)
-  async addTag(@Arg("name") name: string): Promise<Tag> {
-    return await this.tagsService.create(name);
-  }
-
-  @Mutation(() => Tag)
-  async removeTag(@Arg("id", () => ID) id: string): Promise<Tag> {
-    const tag = await this.tagsService.remove(id);
-    await this.todosService.removeTagFromAll(id);
-    return tag;
+    return await this.tagsService.searchTags();
   }
 } 

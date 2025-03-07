@@ -1,8 +1,8 @@
 import { Service, Inject } from "typedi";
-import { Todo, Tag } from "@/graphql/types";
+import { Todo, Tag, NewTodoInput } from "@/graphql/types";
 import { TagsService } from "./tags.service";
 import { db } from "@/db";
-import { todos, todoTags } from "@/db/migrations/schema";
+import { todos, todoTags, tags } from "@/db/migrations/schema";
 import { eq, sql } from "drizzle-orm";
 
 @Service()
@@ -16,36 +16,39 @@ export class TodosService {
     return dbTodos;
   }
 
-  async findById(id: string): Promise<Todo | undefined> {
-    const [dbTodo] = await db.select().from(todos).where(eq(todos.id, id));
-    if (!dbTodo) return undefined;
-
-    return dbTodo;
-  }
-
-  private async getTodoTagIds(todoId: string): Promise<string[]> {
-    const relations = await db
-      .select({ tagId: todoTags.tagId })
-      .from(todoTags)
-      .where(eq(todoTags.todoId, todoId));
-    
-    return relations.map(r => r.tagId);
-  }
-
-  async create(title: string, tagIds: string[] = []): Promise<Todo> {
-    const newTodo = {
-      id: Math.random().toString(36).substr(2, 9),
-      title,
-      completed: false,
-    };
+  async create(newTodoInput: NewTodoInput): Promise<Todo> {
+    const { title, tags: tagOrIds } = newTodoInput;
 
     const [dbTodo] = await db.transaction(async (tx) => {
-      const [createdTodo] = await tx.insert(todos).values(newTodo).returning();
+      const [createdTodo] = await tx.insert(todos).values({ title }).returning();
       
-      if (tagIds.length > 0) {
-        await tx.insert(todoTags).values(
-          tagIds.map(tagId => ({ todoId: createdTodo.id, tagId }))
-        );
+      if (tagOrIds.length > 0) {
+        const tagIds = tagOrIds.map(tag => tag.id).filter(id => id !== undefined);
+        const tagNames = tagOrIds.map(tag => tag.newTag?.name).filter(name => name !== undefined);
+
+        let dbTags: Tag[] = [];
+        if (tagNames.length > 0) {
+          // Insert new tags, ignoring duplicates
+          dbTags = await tx
+            .insert(tags)
+            .values(tagNames.map(name => ({ name })))
+            .onConflictDoNothing({ target: tags.name })
+            .returning();
+        }
+
+        // Combine all tag IDs
+        const allTagIds = [
+          ...tagIds,
+          ...dbTags.map(tag => tag.id),
+        ];
+
+        // Insert todo-tag relationships, ignoring duplicates
+        if (allTagIds.length > 0) {
+          await tx
+            .insert(todoTags)
+            .values(allTagIds.map(id => ({ todoId: createdTodo.id, tagId: id })))
+            .onConflictDoNothing();
+        }
       }
 
       return [createdTodo];
@@ -74,34 +77,7 @@ export class TodosService {
   }
 
   async getTodoTags(todo: Todo): Promise<Tag[]> {
-    const tagIds = await this.getTodoTagIds(todo.id);
-    const tags = await this.tagsService.findByIds(tagIds);
-    return tags.filter((tag): tag is Tag => tag !== null);
-  }
-
-  async addTag(todoId: string, tagId: string): Promise<Todo> {
-    const todo = await this.findById(todoId);
-    if (!todo) throw new Error("Todo not found");
-    
-    const tag = await this.tagsService.findById(tagId);
-    if (!tag) throw new Error("Tag not found");
-
-    await db.insert(todoTags).values({ todoId, tagId });
-    return todo;
-  }
-
-  async removeTag(todoId: string, tagId: string): Promise<Todo> {
-    const todo = await this.findById(todoId);
-    if (!todo) throw new Error("Todo not found");
-
-    await db
-      .delete(todoTags)
-      .where(sql`${todoTags.todoId} = ${todoId} AND ${todoTags.tagId} = ${tagId}`);
-
-    return todo;
-  }
-
-  async removeTagFromAll(tagId: string): Promise<void> {
-    await db.delete(todoTags).where(eq(todoTags.tagId, tagId));
+    const tags = await this.tagsService.getTagsForTodos([todo.id]);
+    return tags[0];
   }
 } 

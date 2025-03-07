@@ -15,8 +15,8 @@ export const GET_TODOS = gql`
 `;
 
 export const ADD_TODO = gql`
-  mutation AddTodo($title: String!, $tagIds: [ID!]) {
-    addTodo(title: $title, tagIds: $tagIds) {
+  mutation AddTodo($newTodoInput: NewTodoInput!) {
+    addTodo(newTodo: $newTodoInput) {
       id
       title
       completed

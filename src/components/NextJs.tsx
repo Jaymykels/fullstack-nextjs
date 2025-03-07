@@ -64,8 +64,12 @@ const NextJs = () => {
     try {
       await addTodo({
         variables: { 
-          title: values.title,
-          tagIds: values.tagIds,
+          newTodoInput: {
+            title: values.title,
+            tags: values.tagIds.map((tagId: string) => ({
+              id: tagId,
+            })),
+          },
         },
         refetchQueries: [{ query: GET_TODOS }],
       });
