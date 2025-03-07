@@ -3,13 +3,13 @@ import { Tag, NewTag } from "@/db/types";
 import { createDataloader } from "@/lib/createDataloader";
 import { db } from "@/db";
 import { tags } from "@/db/migrations/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, inArray } from "drizzle-orm";
 
 @Service()
 export class TagsService {
   private tagLoader = createDataloader<string, Tag | null>(
     async (ids: readonly string[]) => {
-      const foundTags = await db.select().from(tags).where(sql`${tags.id} = ANY(${ids})`);
+      const foundTags = await db.select().from(tags).where(inArray(tags.id, [...ids]));
       return ids.map(id => foundTags.find(tag => tag.id === id) || null);
     }
   );

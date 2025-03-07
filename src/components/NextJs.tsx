@@ -28,6 +28,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_TODOS, ADD_TODO, TOGGLE_TODO, DELETE_TODO, GET_TAGS } from "@/graphql/operations";
 import { MultiSelect } from "@/components/ui/multi-select"
+import { Badge } from "./ui/badge";
 
 interface Todo {
   id: string;
@@ -58,8 +59,6 @@ const NextJs = () => {
       tagIds: [],
     },
   })
-
-  console.log(form.watch("tagIds"));
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -133,6 +132,11 @@ const NextJs = () => {
               >
                 {todo.title}
               </label>
+              <div className="flex gap-2">
+                {todo.tags.map((tag: any) => (
+                  <Badge key={tag.id}>{tag.name}</Badge>
+                ))}
+              </div>
             </li>
           ))}
         </ol>
