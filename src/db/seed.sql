@@ -1,19 +1,19 @@
 TRUNCATE TABLE tags CASCADE;
 INSERT INTO tags (id, name, created_at, updated_at) VALUES (
         'c58ed63a-af24-4225-b978-94909d16a383',
-        'Left',
+        'school',
         '2025-03-07 18:42:48.29897',
         '2025-03-07 18:42:48.29897'
       );
 INSERT INTO tags (id, name, created_at, updated_at) VALUES (
         'bdd3de8d-0045-4456-98ef-ac8366c44e36',
-        'Right',
+        'home',
         '2025-03-07 18:42:48.29897',
         '2025-03-07 18:42:48.29897'
       );
 INSERT INTO tags (id, name, created_at, updated_at) VALUES (
         '8730efb6-2d29-4b98-b39a-ca22f929b295',
-        'Up',
+        'work',
         '2025-03-07 19:07:29.803743',
         '2025-03-07 19:07:29.803743'
       );

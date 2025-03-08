@@ -9,7 +9,6 @@ import { inArray } from "drizzle-orm";
 export class TagsService {
   private tagLoader = createDataloader<string, Tag | null>(
     async (ids: readonly string[]) => {
-      console.log(ids);
       const foundTags = await db.select().from(tags).where(inArray(tags.id, [...ids]));
       return ids.map(id => foundTags.find(tag => tag.id === id) || null);
     }

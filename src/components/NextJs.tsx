@@ -124,7 +124,7 @@ const NextJs = () => {
 
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           {data?.todos.map((todo: any) => (
-            <li key={todo.id} className="mb-2 flex items-center gap-2">
+            <li key={todo.id} className={`mb-2 flex items-center gap-2 ${todo.completed ? 'line-through text-muted-foreground' : ''}`}>
               <Checkbox 
                 id={todo.id}
                 checked={todo.completed}
@@ -132,11 +132,11 @@ const NextJs = () => {
               />
               <label
                 htmlFor={todo.id}
-                className={`flex-1 ${todo.completed ? 'line-through text-muted-foreground' : ''}`}
+                className="flex-1"
               >
                 {todo.title}
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2" data-testid={`todo-tags-${todo.title}`}>
                 {todo.tags.map((tag: any) => (
                   <Badge key={tag.id}>{tag.name}</Badge>
                 ))}
@@ -161,6 +161,8 @@ const NextJs = () => {
             />
             Delete Selected
           </Button>
+
+          {/* Add Todo Dialog */}
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button
