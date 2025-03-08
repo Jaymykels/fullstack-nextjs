@@ -53,7 +53,7 @@ test.describe('Todo Application', () => {
     await page.getByRole('checkbox', { name: 'Todo to Delete' }).click();
 
     // Click delete button
-    await page.getByRole('button', { name: 'Delete Selected' }).click();
+    await page.getByRole('button', { name: 'Delete' }).click();
 
     // Verify todo is removed
     await expect(page.getByText('Todo to Delete')).not.toBeVisible();
