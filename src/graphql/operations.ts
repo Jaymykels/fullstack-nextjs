@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "./codegen";
 
-export const GET_TODOS = gql`
+export const GET_TODOS = graphql(`
   query GetTodos {
     todos {
       id
@@ -12,9 +12,9 @@ export const GET_TODOS = gql`
       }
     }
   }
-`;
+`);
 
-export const ADD_TODO = gql`
+export const ADD_TODO = graphql(`
   mutation AddTodo($newTodoInput: NewTodoInput!) {
     addTodo(newTodo: $newTodoInput) {
       id
@@ -26,30 +26,30 @@ export const ADD_TODO = gql`
       }
     }
   }
-`;
+`);
 
-export const TOGGLE_TODO = gql`
+export const TOGGLE_TODO = graphql(`
   mutation ToggleTodo($id: ID!) {
     toggleTodo(id: $id) {
       id
       completed
     }
   }
-`;
+`);
 
-export const DELETE_TODO = gql`
+export const DELETE_TODO = graphql(`
   mutation DeleteTodo($id: ID!) {
     deleteTodo(id: $id) {
       id
     }
   }
-`; 
+`);
 
-export const GET_TAGS = gql`
+export const GET_TAGS = graphql(`
   query GetTags {
     tags {
       id
       name
     }
   }
-`;
+`);

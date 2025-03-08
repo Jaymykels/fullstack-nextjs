@@ -202,7 +202,7 @@ const NextJs = () => {
                         <FormLabel>Tags</FormLabel>
                         <FormControl>
                           <MultiSelect
-                            options={tagsData?.tags.map((tag: any) => ({
+                            options={tagsData?.tags.map((tag) => ({
                               value: tag.id,
                               label: tag.name,
                             })) || []}

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "concurrently \"next dev --turbopack\" \"yarn codegen --watch\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -18,7 +18,8 @@
     "test": "yarn with-dev \"playwright test --trace on\"",
     "test:ui": "yarn with-dev \"playwright test --ui\"",
     "test:debug": "yarn with-dev \"playwright test --debug\"",
-    "test:codegen": "yarn with-dev \"playwright codegen\""
+    "test:codegen": "yarn with-dev \"playwright codegen\"",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.9.5",
@@ -34,7 +35,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
-    "concurrently": "^9.1.2",
     "dataloader": "^2.2.3",
     "drizzle-orm": "^0.40.0",
     "graphql": "^16.10.0",
@@ -57,6 +57,9 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@graphql-codegen/cli": "5.0.4",
+    "@graphql-codegen/client-preset": "4.6.1",
+    "@parcel/watcher": "^2.5.1",
     "@playwright/test": "^1.51.0",
     "@tailwindcss/postcss": "^4",
     "@types/micro-cors": "^0.1.5",
@@ -64,6 +67,7 @@
     "@types/pg": "^8.11.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
     "drizzle-kit": "^0.30.5",
     "eslint": "^9",
     "eslint-config-next": "15.2.0",
