@@ -1,6 +1,20 @@
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +22,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_TODO, GET_TAGS, GET_TODOS } from "@/graphql/operations";
+import type { GetTagsQuery } from "@/graphql/codegen/graphql";
 
 const formSchema = z.object({
   title: z.string().min(3, {
@@ -36,7 +51,7 @@ export function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await addTodo({
-        variables: { 
+        variables: {
           newTodoInput: {
             title: values.title,
             tags: values.tagIds.map((tagId: string) => ({
@@ -49,7 +64,7 @@ export function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
       form.reset();
       onOpenChange(false);
     } catch (error) {
-      console.error('Failed to add todo:', error);
+      console.error("Failed to add todo:", error);
     }
   }
 
@@ -85,10 +100,12 @@ export function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
                   <FormLabel>Tags</FormLabel>
                   <FormControl>
                     <MultiSelect
-                      options={tagsData?.tags.map((tag: any) => ({
-                        value: tag.id,
-                        label: tag.name,
-                      })) ?? []}
+                      options={
+                        tagsData?.tags.map((tag: GetTagsQuery["tags"][0]) => ({
+                          value: tag.id,
+                          label: tag.name,
+                        })) ?? []
+                      }
                       selected={field.value}
                       onChange={field.onChange}
                     />
@@ -105,4 +122,4 @@ export function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
       </DialogContent>
     </Dialog>
   );
-} 
+}

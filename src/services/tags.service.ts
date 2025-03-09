@@ -1,5 +1,5 @@
 import { Service } from "typedi";
-import { Tag } from "@/db/types";
+import type { Tag } from "@/db/types";
 import { createDataloader } from "@/lib/createDataloader";
 import { db } from "@/db";
 import { tags, todoTags } from "@/db/migrations/schema";
@@ -28,7 +28,7 @@ export class TagsService {
   );
 
   async searchTags(): Promise<Tag[]> {
-    let result = await db.select().from(tags);
+    const result = await db.select().from(tags);
     return result;
   }
 

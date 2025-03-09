@@ -4,8 +4,9 @@ import { buildSchema } from 'type-graphql';
 import { Container } from "@/container";
 import { TodoResolver } from '@/graphql/resolvers/todo.resolver';
 import { TagResolver } from '@/graphql/resolvers/tag.resolver';
+import type { GraphQLSchema } from 'graphql';
 
-let schema: any;
+let schema: GraphQLSchema;
 
 async function getSchema() {
   if (!schema) {

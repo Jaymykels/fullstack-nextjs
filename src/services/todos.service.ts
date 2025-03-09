@@ -1,6 +1,6 @@
 import { Service, Inject } from "typedi";
-import { Todo, Tag, NewTodoInput } from "@/graphql/types";
-import { TagsService } from "./tags.service";
+import type { Todo, Tag, NewTodoInput } from "@/graphql/types";
+import type { TagsService } from "./tags.service";
 import { db } from "@/db";
 import { todos, todoTags, tags } from "@/db/migrations/schema";
 import { eq, sql } from "drizzle-orm";

@@ -3,23 +3,24 @@ import { Badge } from "@/components/ui/badge";
 import { useMutation } from "@apollo/client";
 import { TOGGLE_TODO, DELETE_TODO, GET_TODOS } from "@/graphql/operations";
 import { Button } from "../ui/button";
+import type { GetTodosQuery } from "@/graphql/codegen/graphql";
 
 interface TodoListProps {
-  todos: any[];
+  todos: GetTodosQuery["todos"];
 }
 
 export function TodoList({ todos }: TodoListProps) {
   const [toggleTodo] = useMutation(TOGGLE_TODO);
   const [deleteTodo] = useMutation(DELETE_TODO);
 
-  const handleToggle = async (id: string, completed: boolean) => {
+  const handleToggle = async (id: string) => {
     try {
       await toggleTodo({
         variables: { id },
         refetchQueries: [{ query: GET_TODOS }],
       });
     } catch (error) {
-      console.error('Failed to toggle todo:', error);
+      console.error("Failed to toggle todo:", error);
     }
   };
 
@@ -30,7 +31,7 @@ export function TodoList({ todos }: TodoListProps) {
         refetchQueries: [{ query: GET_TODOS }],
       });
     } catch (error) {
-      console.error('Failed to delete todo:', error);
+      console.error("Failed to delete todo:", error);
     }
   };
 
@@ -39,16 +40,18 @@ export function TodoList({ todos }: TodoListProps) {
       {todos.map((todo) => (
         <div key={todo.id} className="flex flex-row justify-between">
           <div
-            className={`flex items-center w-full gap-4 ${todo.completed ? 'line-through text-gray-500' : ''}`}
+            className={`flex items-center w-full gap-4 ${
+              todo.completed ? "line-through text-gray-500" : ""
+            }`}
           >
             <Checkbox
               checked={todo.completed}
-              onCheckedChange={(checked) => handleToggle(todo.id, !!checked)}
+              onCheckedChange={() => handleToggle(todo.id)}
               aria-label={todo.title}
             />
             <span className="flex-1">{todo.title}</span>
             <div data-testid={`todo-tags-${todo.title}`} className="flex gap-2">
-              {todo.tags.map((tag: any) => (
+              {todo.tags.map((tag: GetTodosQuery["todos"][0]["tags"][0]) => (
                 <Badge key={tag.id} variant="secondary">
                   {tag.name}
                 </Badge>
@@ -70,4 +73,4 @@ export function TodoList({ todos }: TodoListProps) {
       ))}
     </div>
   );
-} 
+}

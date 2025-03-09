@@ -1,5 +1,5 @@
-import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { tags, todos, todoTags } from './migrations/schema';
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
+import type { tags, todos, todoTags } from './migrations/schema';
 
 // Infer types from schema
 export type Tag = InferSelectModel<typeof tags>;

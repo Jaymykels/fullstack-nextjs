@@ -2,8 +2,8 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { dbConfig } from './config';
 import { todos, tags, todoTags } from './migrations/schema';
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 const pool = new Pool(dbConfig);
 const db = drizzle(pool);

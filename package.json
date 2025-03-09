@@ -6,7 +6,7 @@
     "dev": "concurrently \"next dev --turbopack\" \"yarn codegen --watch\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "biome lint .",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
@@ -19,7 +19,12 @@
     "test:ui": "yarn with-dev \"playwright test --ui\"",
     "test:debug": "yarn with-dev \"playwright test --debug\"",
     "test:codegen": "yarn with-dev \"playwright codegen\"",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config codegen.ts",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check": "biome check --apply .",
+    "check:ci": "biome ci .",
+    "biome": "biome"
   },
   "dependencies": {
     "@apollo/client": "^3.9.5",
@@ -56,7 +61,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "^1.9.4",
     "@eslint/eslintrc": "^3",
     "@graphql-codegen/cli": "5.0.4",
     "@graphql-codegen/client-preset": "4.6.1",

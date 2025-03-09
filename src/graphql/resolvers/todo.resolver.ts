@@ -1,7 +1,7 @@
 import { Arg, FieldResolver, ID, Mutation, Query, Resolver, Root } from "type-graphql";
 import { Service } from "typedi";
-import { Todo, Tag, NewTodoInput } from "../types";
-import { TodosService } from "@/services/todos.service";
+import { Todo, Tag, type NewTodoInput } from "../types";
+import type { TodosService } from "@/services/todos.service";
 
 @Service()
 @Resolver(() => Todo)
