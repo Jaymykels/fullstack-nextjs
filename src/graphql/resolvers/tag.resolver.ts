@@ -1,7 +1,7 @@
 import { Query, Resolver } from "type-graphql";
 import { Service } from "typedi";
 import { Tag } from "../types";
-import type { TagsService } from "@/services/tags.service";
+import { TagsService } from "@/services/tags.service";
 
 @Service()
 @Resolver(() => Tag)

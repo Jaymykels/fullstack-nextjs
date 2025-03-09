@@ -1,6 +1,6 @@
 import { Service, Inject } from "typedi";
 import type { Todo, Tag, NewTodoInput } from "@/graphql/types";
-import type { TagsService } from "./tags.service";
+import { TagsService } from "./tags.service";
 import { db } from "@/db";
 import { todos, todoTags, tags } from "@/db/migrations/schema";
 import { eq, sql } from "drizzle-orm";
@@ -8,7 +8,7 @@ import { eq, sql } from "drizzle-orm";
 @Service()
 export class TodosService {
   constructor(
-    @Inject() private readonly tagsService: TagsService
+    private readonly tagsService: TagsService
   ) {}
 
   async findAll(): Promise<Todo[]> {

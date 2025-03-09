@@ -1,9 +1,9 @@
 import { Container } from "typedi";
-import { TagsService } from "./services/tags.service";
 import { TodosService } from "./services/todos.service";
+import { TagsService } from "./services/tags.service";
 
 // Register services
-Container.set(TagsService, new TagsService());
 Container.set(TodosService, new TodosService(Container.get(TagsService)));
+Container.set(TagsService, new TagsService());
 
 export { Container }; 
