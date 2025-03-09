@@ -6,9 +6,7 @@ import { TodosService } from "@/services/todos.service";
 @Service()
 @Resolver(() => Todo)
 export class TodoResolver {
-  constructor(
-    private readonly todosService: TodosService
-  ) {}
+  constructor(private readonly todosService: TodosService) {}
 
   @Query(() => [Todo])
   async todos(): Promise<Todo[]> {
@@ -21,9 +19,7 @@ export class TodoResolver {
   }
 
   @Mutation(() => Todo)
-  async addTodo(
-    @Arg("newTodo", () => NewTodoInput) newTodo: NewTodoInput
-  ): Promise<Todo> {
+  async addTodo(@Arg("newTodo", () => NewTodoInput) newTodo: NewTodoInput): Promise<Todo> {
     return await this.todosService.create(newTodo);
   }
 
@@ -36,4 +32,4 @@ export class TodoResolver {
   async deleteTodo(@Arg("id", () => ID) id: string): Promise<Todo> {
     return await this.todosService.remove(id);
   }
-} 
+}

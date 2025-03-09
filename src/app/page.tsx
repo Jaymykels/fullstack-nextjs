@@ -20,6 +20,6 @@ const Page = () => {
       <Todo />
     </>
   );
-}
+};
 
 export default Page;

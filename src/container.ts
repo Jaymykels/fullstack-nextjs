@@ -6,4 +6,4 @@ import { TagsService } from "./services/tags.service";
 Container.set(TodosService, new TodosService(Container.get(TagsService)));
 Container.set(TagsService, new TagsService());
 
-export { Container }; 
+export { Container };

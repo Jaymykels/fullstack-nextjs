@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { ApolloLink, HttpLink } from "@apollo/client";
 import {
@@ -28,9 +28,5 @@ function makeClient() {
 }
 
 export function ApolloWrapper({ children }: React.PropsWithChildren) {
-  return (
-    <ApolloNextAppProvider makeClient={makeClient}>
-      {children}
-    </ApolloNextAppProvider>
-  );
-} 
+  return <ApolloNextAppProvider makeClient={makeClient}>{children}</ApolloNextAppProvider>;
+}

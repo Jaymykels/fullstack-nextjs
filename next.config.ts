@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       test: /\.tsx?$/,
       use: [
         {
-          loader: 'ts-loader',
+          loader: "ts-loader",
           options: {
             transpileOnly: true,
             experimentalDecorators: true,

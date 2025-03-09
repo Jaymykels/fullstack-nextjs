@@ -73,9 +73,7 @@ export function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Todo</DialogTitle>
-          <DialogDescription>
-            Add a new todo item to your list.
-          </DialogDescription>
+          <DialogDescription>Add a new todo item to your list.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

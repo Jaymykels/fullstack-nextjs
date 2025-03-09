@@ -31,7 +31,7 @@ export class Todo {
 
   @Field(() => String)
   updatedAt: string;
-} 
+}
 
 @InputType()
 export class NewTagInput {

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { X } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import * as React from "react";
+import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   Command,
   CommandEmpty,
@@ -10,26 +10,22 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export type Option = {
-  value: string
-  label: string
-}
+  value: string;
+  label: string;
+};
 
 interface MultiSelectProps {
-  options: Option[]
-  selected: string[]
-  onChange: (values: string[]) => void
-  className?: string
-  placeholder?: string
+  options: Option[];
+  selected: string[];
+  onChange: (values: string[]) => void;
+  className?: string;
+  placeholder?: string;
 }
 
 export function MultiSelect({
@@ -39,11 +35,11 @@ export function MultiSelect({
   className,
   placeholder = "Select options...",
 }: MultiSelectProps) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   const handleUnselect = (value: string) => {
-    onChange(selected.filter((item) => item !== value))
-  }
+    onChange(selected.filter((item) => item !== value));
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -62,8 +58,8 @@ export function MultiSelect({
                 variant="secondary"
                 className="mr-1"
                 onClick={(e) => {
-                  e.stopPropagation()
-                  handleUnselect(value)
+                  e.stopPropagation();
+                  handleUnselect(value);
                 }}
               >
                 {options.find((opt) => opt.value === value)?.label}
@@ -71,17 +67,17 @@ export function MultiSelect({
                   className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      handleUnselect(value)
+                      handleUnselect(value);
                     }
                   }}
                   onMouseDown={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
+                    e.preventDefault();
+                    e.stopPropagation();
                   }}
                   onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    handleUnselect(value)
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleUnselect(value);
                   }}
                 >
                   <X className="h-3 w-3" />
@@ -105,7 +101,7 @@ export function MultiSelect({
                       selected.includes(option.value)
                         ? selected.filter((item) => item !== option.value)
                         : [...selected, option.value]
-                    )
+                    );
                   }}
                 >
                   <div
@@ -123,11 +119,7 @@ export function MultiSelect({
                       stroke="currentColor"
                       strokeWidth={2}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <span>{option.label}</span>
@@ -138,5 +130,5 @@ export function MultiSelect({
         </Command>
       </PopoverContent>
     </Popover>
-  )
-} 
+  );
+}

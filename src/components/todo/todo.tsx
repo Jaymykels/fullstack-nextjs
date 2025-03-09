@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@apollo/client";
@@ -27,6 +27,6 @@ const Todo = () => {
       </main>
     </div>
   );
-}
+};
 
 export default Todo;
