@@ -1,8 +1,10 @@
+import "../../envConfig";
+
 export const dbConfig = {
-  host: "localhost",
+  host: process.env.POSTGRES_HOST,
   port: 5433,
-  user: "postgres",
-  password: "postgres",
-  database: "todos",
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
   ssl: false,
 } as const;

@@ -1,9 +1,9 @@
-
+import './envConfig.ts'
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "http://localhost:3000/api/graphql",
+  schema: process.env.GRAPHQL_ENDPOINT,
   documents: "src/**/*.ts",
   generates: {
     "src/graphql/codegen/": {
