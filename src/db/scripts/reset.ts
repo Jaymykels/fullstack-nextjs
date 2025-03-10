@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
-import { dbConfig } from "./config";
+import { dbConfig } from "../config";
 import fs from "node:fs/promises";
 import path from "node:path";
 
@@ -42,7 +42,7 @@ async function main() {
 
   // Apply seed data if it exists
   try {
-    const seedPath = path.join(process.cwd(), "src", "db", "seed.sql");
+    const seedPath = path.join(process.cwd(), "src", "db", "scripts", "seed.sql");
     const seedSQL = await fs.readFile(seedPath, "utf-8");
     if (seedSQL) {
       console.log("Applying seed data...");

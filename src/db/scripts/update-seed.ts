@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { dbConfig } from "./config";
-import { todos, tags, todoTags } from "./migrations/schema";
+import { dbConfig } from "../config";
+import { todos, tags, todoTags } from "../migrations/schema";
 import fs from "node:fs/promises";
 import path from "node:path";
 
@@ -54,7 +54,7 @@ async function main() {
   ];
 
   // Write to seed file
-  const seedPath = path.join(process.cwd(), "src", "db", "seed.sql");
+  const seedPath = path.join(process.cwd(), "src", "db", "scripts", "seed.sql");
   await fs.writeFile(seedPath, statements.join("\n"));
 
   console.log("Seed file updated at src/db/seed.sql");
