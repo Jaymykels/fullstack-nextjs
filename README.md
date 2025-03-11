@@ -1,103 +1,117 @@
-# Next.js Todo Application with GraphQL
+# Full-Stack Todo Application
 
-A modern Todo application built with Next.js, GraphQL, Drizzle ORM, and PostgreSQL. This project demonstrates a full-stack application with type-safe database operations, GraphQL API, and a React frontend.
+A modern, production-ready Todo application demonstrating advanced full-stack development practices using Next.js 14, GraphQL, and PostgreSQL. This project showcases enterprise-level architecture, type safety across the stack, and modern development workflows.
 
-## Features
+## Technical Stack
 
-- ✨ Full-stack TypeScript application
-- 🎯 GraphQL API with Type-GraphQL
-- 🗃️ PostgreSQL database with Drizzle ORM
-- 🔄 Real-time updates with Apollo Client
-- 🎨 Styled with Tailwind CSS and Radix UI
-- 🔒 Type-safe database operations
-- 🌱 Database seeding and migrations
-- 🐳 Docker-compose for development
+### Backend Infrastructure
+- **Database**: PostgreSQL with Drizzle ORM for type-safe queries and migrations
+- **API Layer**: GraphQL with Type-GraphQL for fully typed schema definitions
+- **Server**: Next.js 14 App Router with GraphQL Yoga
+- **Performance**: DataLoader for efficient batched database queries
+- **Type Safety**: Full TypeScript implementation with generated types
+
+### Frontend Architecture
+- **Framework**: Next.js 14 with React Server Components
+- **State Management**: Apollo Client with automatic cache updates
+- **UI Components**: Custom component library built on Radix UI primitives using Shadcn
+- **Styling**: Tailwind CSS with custom design system
+- **Forms**: React Hook Form with Zod validation
+
+### Developer Experience
+- **Type Safety**: End-to-end type safety with TypeScript
+- **Code Quality**: 
+  - Biome for linting and formatting
+  - GraphQL Codegen for type-safe operations
+  - Drizzle Kit for database schema management
+- **Testing**: Playwright for E2E testing
+- **Development**: Docker Compose for local development
+
+## Core Features
+
+- **Advanced Todo Management**
+  - Real-time updates with optimistic UI
+  - Tag-based organization system
+  - Batch operations support
+  
+- **Database Operations**
+  - Type-safe query building
+  - Automated migrations
+  - Seeding functionality
+  - Data integrity with foreign key constraints
+
+- **GraphQL Implementation**
+  - Efficient data loading with DataLoader
+  - Type-safe resolvers and operations
+  - Automatic type generation
+  - Real-time subscription support
 
 ## Getting Started
 
-1. Clone the repository
-2. Install dependencies:
+1. **Environment Setup**
 ```bash
+# Clone and install dependencies
+git clone <repository-url>
 yarn install
-```
 
-3. Start the PostgreSQL database:
-```bash
+# Start PostgreSQL
 docker-compose up -d
+
+# Configure environment
+cp .env.example .env
 ```
 
-4. Set up the database:
+2. **Database Setup**
 ```bash
-# Generate migrations
-yarn db:generate
-
 # Run migrations
 yarn db:migrate
 
-# (Optional) Reset database and apply seed data
+# (Optional) Seed database
 yarn db:reset
 ```
 
-5. Start the development server:
+3. **Development**
 ```bash
+# Start development server
 yarn dev
+
+# Generate GraphQL types (in watch mode)
+yarn graphql:codegen --watch
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
-## Database Commands
+## Development Commands
 
+### Database Operations
 - `yarn db:generate` - Generate new migrations
-- `yarn db:push` - Push schema changes to database
-- `yarn db:pull` - Pull database changes to schema
-- `yarn db:migrate` - Run pending migrations
-- `yarn db:studio` - Open Drizzle Studio
-- `yarn db:reset` - Reset database and apply migrations
-- `yarn db:update-seed` - Update seed file with current database data
+- `yarn db:migrate` - Apply pending migrations
+- `yarn db:reset` - Reset database with seed data
+
+### Testing & Quality
+- `yarn test` - Run E2E tests
+- `yarn lint` - Run linting
+- `yarn format` - Format code
+- `yarn graphql:codegen` - Generate GraphQL types
 
 ## Project Structure
 
 ```
 src/
-├── app/                 # Next.js app router
-├── components/         # React components
-├── db/                 # Database configuration and migrations
+├── app/                 # Next.js App Router pages
+├── components/         
+│   ├── ui/            # Reusable UI components
+│   └── features/      # Feature-specific components
+├── db/                
 │   ├── migrations/    # Database migrations
 │   └── schema.ts      # Database schema
-├── graphql/           # GraphQL types and operations
-│   ├── operations.ts  # GraphQL queries and mutations
+├── graphql/           
 │   ├── resolvers/     # GraphQL resolvers
-│   └── types.ts       # GraphQL type definitions
+│   ├── types.ts       # GraphQL type definitions
+│   └── operations.ts  # GraphQL operations
 ├── lib/               # Shared utilities
 └── services/          # Business logic layer
 ```
-
-## Features
-
-### Todo Management
-- Create new todos
-- Toggle todo completion
-- Delete completed todos
-- Add tags to todos
-- Filter todos by tags
-
-### Database
-- Type-safe database operations with Drizzle ORM
-- Database migrations
-- Seed data management
-- Database reset functionality
-
-### API
-- GraphQL API with Type-GraphQL
-- DataLoader for efficient data fetching
-- Type-safe resolvers and operations
-
-### Frontend
-- Modern React with hooks
-- Apollo Client for state management
-- Form handling with React Hook Form
-- UI components with Radix UI
-- Styling with Tailwind CSS
 
 ## Learn More
 
